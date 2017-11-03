@@ -22,7 +22,7 @@ public class DisplayListening implements DisplayListener {
 
 	@Override
 	public void messageChange(Display display, String oldMessage, String newMessage) {
-		
+		// write new message to logger 
 		
 	}
 	
