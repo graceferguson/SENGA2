@@ -24,8 +24,8 @@ public class DisplayListening implements DisplayListener {
 
 	@Override
 	public void messageChange(Display display, String oldMessage, String newMessage) {
-		this.prevMessage = oldMessage;
-		this.currMessage = newMessage;
+		prevMessage = oldMessage;
+		currMessage = newMessage;
 		// write new message to logger 
 		
 	}
