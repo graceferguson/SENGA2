@@ -10,6 +10,8 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	private boolean isOn;
 	private int value;
 	private int coinCount;
+	private String message;
+	private Display display;
 
 	// not sure why this listening takes in a variable, don't see it being used
 	// anywhere - thomas
@@ -17,6 +19,8 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 		isOn = true;
 		value = 0;
 		coinCount = 0;
+		message = "";
+		display = new Display();
 	}
 
 	/**
@@ -39,6 +43,9 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	public void coinAdded(CoinReceptacle receptacle, Coin coin) {
 		coinCount++;
 		value += coin.getValue();
+		message = "Credit: "+ value;
+		display.display(message);
+		
 	}
 
 	/**
