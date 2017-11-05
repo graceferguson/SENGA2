@@ -1,5 +1,7 @@
 package package ca.ucalgary.seng300.a2;
 
+import java.io.IOException;
+
 public class DisplayListening implements DisplayListener {
 	private boolean isOn;
 	private String prevMessage = "";
@@ -26,11 +28,15 @@ public class DisplayListening implements DisplayListener {
 	public void messageChange(Display display, String oldMessage, String newMessage) {
 		prevMessage = oldMessage;
 		currMessage = newMessage;
-		// write new message to logger 
+		try {
+			LogFile.writeLog(this.getClass().getName() + "\t" + currMessage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 		
 	}
 	
-	public boolean getIsOn() {
+	public boolean isOn() {
 		return isOn;
 		
 	}
