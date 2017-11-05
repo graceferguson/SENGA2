@@ -5,7 +5,7 @@
 * A delivery chute listener class
 */
 
-package ca.ucalgary.seng300.a1;
+package ca.ucalgary.seng300.a2;
 
 import org.lsmr.vending.*;
 import org.lsmr.vending.hardware.*;

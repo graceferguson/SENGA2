@@ -1,7 +1,7 @@
 //SENG300 Group Assignment 1
 //Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
 
-package ca.ucalgary.seng300.a1;
+package ca.ucalgary.seng300.a2;
 
 import org.lsmr.vending.hardware.*;
 
@@ -14,15 +14,19 @@ public class VendCommunicator {
 	private CoinReceptacleListening receptacle;
 	private PopCanRackListening[] pRacks;
 	private VendingMachine machine;
+	private IndicatorLighListening lightListener;
+	private DisplayLightListening displayLightListener;
 
 	public VendCommunicator() {
 	}
 
 	// Links the appropriate parts to their corresponding variables
-	public void linkVending(CoinReceptacleListening receptacle, PopCanRackListening[] pRacks, VendingMachine machine) {
+	public void linkVending(CoinReceptacleListening receptacle, PopCanRackListening[] pRacks, IndicatorLighListening indicator, DisplayLightListening display, VendingMachine machine) {
 		this.receptacle = receptacle;
 		this.pRacks = pRacks;
 		this.machine = machine;
+		this.lightListener = indicator;
+		this.displayLightListener = display;
 	}
 
 	/**
