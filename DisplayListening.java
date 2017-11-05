@@ -29,7 +29,7 @@ public class DisplayListening implements DisplayListener {
 		prevMessage = oldMessage;
 		currMessage = newMessage;
 		try {
-			LogFile.writeLog(this.getClass().getName() + "\t" + currMessage);
+			LogFile.writeLog(LogFile.df.format(LogFile.dateobj) + "\t" + this.getClass().getName() + "\t" + currMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
