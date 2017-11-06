@@ -11,16 +11,15 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	private int value;
 	private int coinCount;
 	private String message;
-	private Display display;
+//	private Display display;
 
-	// not sure why this listening takes in a variable, don't see it being used
-	// anywhere - thomas
+
 	public CoinReceptacleListening(int reCap) {
 		isOn = true;
 		value = 0;
 		coinCount = 0;
 		message = "";
-		display = new Display();
+//		display = new Display();
 	}
 
 	/**
@@ -42,10 +41,10 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	 */
 	public void coinAdded(CoinReceptacle receptacle, Coin coin) {
 		coinCount++;
+		// interrupt emptyMsgLoop if value was 0
 		value += coin.getValue();
 		message = "Credit: "+ value;
-		display.display(message);
-		
+//		display.display(message);
 	}
 
 	/**
@@ -54,6 +53,7 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	public void coinsRemoved(CoinReceptacle receptacle) {
 		value = 0;
 		coinCount = 0;
+		// call emptyMsgLoop.reactivateMsg() to start up loop again
 	}
 
 	public void coinsFull(CoinReceptacle receptacle) {

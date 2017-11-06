@@ -1,4 +1,4 @@
-//SENG300 Group Assignment 1
+//SENG300 Group Assignment 2
 //Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
 
 package ca.ucalgary.seng300.a2;
@@ -14,17 +14,15 @@ public class VendCommunicator {
 	private CoinReceptacleListening receptacle;
 	private PopCanRackListening[] pRacks;
 	private VendingMachine machine;
-	private DisplayListening displayListener;
 
 	public VendCommunicator() {
 	}
 
 	// Links the appropriate parts to their corresponding variables
-	public void linkVending(CoinReceptacleListening receptacle, PopCanRackListening[] pRacks, VendingMachine machine, DisplayListening display) {
+	public void linkVending(CoinReceptacleListening receptacle, PopCanRackListening[] pRacks, VendingMachine machine) {
 		this.receptacle = receptacle;
 		this.pRacks = pRacks;
 		this.machine = machine;
-		this.displayListener = display;
 	}
 
 	/**
@@ -52,5 +50,14 @@ public class VendCommunicator {
 		} else {
 			System.out.println("Insufficient Funds");
 		}
+	}
+	
+	/**
+	* Function that is called when something needs to print to the display
+	*
+	* message - the message being outputted to the display
+	*/
+	public void displayMsg(String message) {
+		machine.getDisplay().display(message);
 	}
 }
