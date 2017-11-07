@@ -1,6 +1,8 @@
-package package ca.ucalgary.seng300.a2;
+package ca.ucalgary.seng300.a2;
 
+import org.lsmr.vending.hardware.*;
 import java.io.IOException;
+
 
 public class DisplayListening implements DisplayListener {
 	private boolean isOn;
@@ -28,12 +30,14 @@ public class DisplayListening implements DisplayListener {
 	public void messageChange(Display display, String oldMessage, String newMessage) {
 		prevMessage = oldMessage;
 		currMessage = newMessage;
-		try {
+		
+		System.out.println(currMessage);
+/**		try {
 			LogFile.writeLog(LogFile.df.format(LogFile.dateobj) + "\t" + this.getClass().getName() + "\t" + currMessage);
 		} catch (IOException e) {
 			e.printStackTrace();
 		} 
-		
+*/		
 	}
 	
 	public boolean isOn() {

@@ -1,3 +1,4 @@
+package ca.ucalgary.seng300.a2;
 import java.lang.InterruptedException;
 
 /**
@@ -7,14 +8,27 @@ import java.lang.InterruptedException;
 public class emptyMsgLoop implements Runnable
 {
 	private String message;
-	private Boolean reactivate;
-	private vendCommunicator communicator;
+	volatile private Boolean reactivate;
+	private VendCommunicator communicator;
+	private Thread msgLoopThread;
 	
-	public emptyMsgLoop(String message, vendCommunicator communicator)
+	public emptyMsgLoop(String message, VendCommunicator communicator)
 	{
 		this.message = message;
 		reactivate = false;
 		this.communicator = communicator;
+		msgLoopThread = new Thread(this);
+	}
+	
+	public Thread startThread()
+	{
+		msgLoopThread.start();
+		return msgLoopThread;
+	}
+	
+	public void interruptThread()
+	{
+		msgLoopThread.interrupt();
 	}
 	
 	// function that reactivates the looping message. Called by coinReceptacleListening when coin receptacle is empty.
@@ -33,21 +47,16 @@ public class emptyMsgLoop implements Runnable
 			{
 				while(true)
 				{
-					communicator.displayMsg("Hi there!")
+					communicator.displayMsg(message);
 					Thread.sleep(5000);
-					communicator.displayMsg("")
+					communicator.displayMsg("");
 					Thread.sleep(10000);
 				}
 			}
 			// when an interrupt is received 
 			catch(InterruptedException e)
 			{
-				// waits for the message to get reactivated
-				while(!reactivate)
-				{
-					Thread.sleep(100);
-				}
-				// sets reactive back to false and loops to the top
+				while(reactivate == false){}
 				reactivate = false;
 			}
 		}
