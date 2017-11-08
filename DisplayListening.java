@@ -40,5 +40,41 @@ public class DisplayListening implements DisplayListener {
 		return isOn;
 		
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getPrevMessage() {
+		return prevMessage;
+		
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public String getCurrMessage() {
+		return currMessage;
+		
+	}
+	
+	/**
+	 * For testing purposes 
+	 * @param msg
+	 */
+	public void setCurrMessage(String msg) {
+		currMessage = msg;
+		
+	}
+	
+	/**
+	 * for testing purposes
+	 * @param msg
+	 */
+	public void setPrevMessage(String msg) {
+		prevMessage = msg;
+		
+	}
 
 }
