@@ -1,4 +1,4 @@
-package org.lsmr.vending.hardware;
+package ca.ucalgary.seng300.a2;
 
 import static org.junit.Assert.*;
 
