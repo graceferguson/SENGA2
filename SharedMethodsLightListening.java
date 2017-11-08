@@ -13,6 +13,8 @@ public class SharedMethodsLightListening  implements IndicatorLightListener{
 	
 	
 	Boolean isActive; 
+	private String prevMessage = "";
+	private String currMessage = "";
 	
 	public Timestamp getCurrentTime() {	
 			
@@ -23,30 +25,40 @@ public class SharedMethodsLightListening  implements IndicatorLightListener{
 		
 		}
 	
-	public void messageChange(Display display, String oldMessage, String newMessage) {
+	public void messageChange(String oldMessage, String newMessage) {
 		// call event log here 
 		Timestamp currentTime = getCurrentTime();
 		String classType  = this.getClass().getName();
 		newMessage = currentTime+ classType + "\t" + newMessage;
-//		writeLog(newMessage)	
+//		try {
+//			LogFile.writeLog(newMessage);
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		} 
 	}
 	
 	public Boolean getisActive() {
 			return isActive;
 	}
 	
+	private void setMessage (IndicatorLight light) {
+		prevMessage  = "Light isActive value was" + isActive;
+		isActive = light.isActive();
+		currMessage = "Light isActive value is now " + isActive; 
+		messageChange(currMessage, prevMessage);
+		
+	}
+	
 	@Override
 	public void activated(IndicatorLight light) {
-		// TODO Auto-generated method stub
-		isActive = light.isActive();
-	//	messageChange(display, oldMessage, newMessage);		
+		setMessage(light);
+		
 	}
 	
 	@Override
 	public void deactivated(IndicatorLight light) {
-		// TODO Auto-generated method stub
-		isActive = light.isActive();
-	//	messageChange(display, oldMessage, newMessage);		
+		setMessage(light);
+	
 	}
 	
 	
