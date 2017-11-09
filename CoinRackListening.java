@@ -1,5 +1,4 @@
-//SENG300 Group Assignment 1
-//Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
+//SENG300 Group Assignment 2
 
 package ca.ucalgary.seng300.a2;
 
@@ -99,7 +98,7 @@ public class CoinRackListening implements CoinRackListener {
 	public int getCoins() {
 		return coinCount;
 	}
-	
+
 	/**
 	 * 
 	 * @return true if there are coins in the rack
