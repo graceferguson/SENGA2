@@ -1,5 +1,4 @@
-//SENG300 Group Assignment 1
-//Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
+//SENG300 Group Assignment 2
 
 package ca.ucalgary.seng300.a2;
 
@@ -21,7 +20,8 @@ public class VendCommunicator {
 	}
 
 	// Links the appropriate parts to their corresponding variables
-	public void linkVending(CoinReceptacleListening receptacle, PopCanRackListening[] pRacks, VendingMachine machine, HashMap<CoinRack, CoinRackListening> cRacks) {
+	public void linkVending(CoinReceptacleListening receptacle, PopCanRackListening[] pRacks, VendingMachine machine,
+			HashMap<CoinRack, CoinRackListening> cRacks) {
 		this.receptacle = receptacle;
 		this.pRacks = pRacks;
 		this.machine = machine;
@@ -35,9 +35,8 @@ public class VendCommunicator {
 	 * 
 	 * Checks if the requested pop is available. If it is, checks to see if the
 	 * machine has enough credit to purchase the soda. If enough credit is
-	 * available, deducts the price of the appropriate pop and calls for the
-	 * machine to dispense said pop. Prints an appropriate message in each
-	 * instance.
+	 * available, deducts the price of the appropriate pop and calls for the machine
+	 * to dispense said pop. Prints an appropriate message in each instance.
 	 */
 	public void purchasePop(int index) {
 		if (pRacks[index].isEmpty()) {
@@ -54,128 +53,197 @@ public class VendCommunicator {
 			System.out.println("Insufficient Funds");
 		}
 	}
-	
+
 	/**
+	 * Determines whether or not there are enough coins in the coin racks to give
+	 * any arbitrary amount of change back after a transaction has occurred.
 	 * 
 	 * @return True if the machine can return exact change, false otherwise
 	 */
 	public boolean hasChange() {
-		return false;
-	}
-	
-	/**
-	 * Removes a specified amount of money from the coin racks and delivers them to the coin racks' sink
-	 * This method is intended for giving change.
-	 * This method does not guarantee that exact change will be given, instead, as close to exact change will be given
-	 * 
-	 * the correctness of this method for change giving is based on the assumption that
-	 * all coins from the receptacle were added to the coin racks before change was given.
-	 * @param change The amount of change that needs to be given
-	 * @return the amount of change that was not given (returned 0 means all change was given)
-	 */
-	public int giveChange(int change){
-		if(change == 0) {return 0;}
-		
-		int[] coinKinds = new int[machine.getNumberOfCoinRacks()]; //get the coin kinds used in the machine
-		for(int i=0; i<machine.getNumberOfCoinRacks(); i++) {
+		int[] coinKinds = new int[machine.getNumberOfCoinRacks()]; // get the coin kinds used in the machine
+		for (int i = 0; i < machine.getNumberOfCoinRacks(); i++) {
 			coinKinds[i] = machine.getCoinKindForCoinRack(i);
 		}
-		Arrays.sort(coinKinds); //sort in ascending order
-		for(int i=0; i<machine.getNumberOfCoinRacks()/2; i++) { //reverse sorted array
-			int temp = coinKinds[i];
-			coinKinds[i] = coinKinds[coinKinds.length - 1 - i];
-			coinKinds[coinKinds.length - 1 - i] = temp;
+		Arrays.sort(coinKinds); // sort in ascending order
+
+		int[] coinsIn = new int[machine.getNumberOfCoinRacks()];
+
+		for (int i = 0; i < machine.getNumberOfCoinRacks(); i++) {
+			coinsIn[i] = cRacks.get(machine.getCoinRackForCoinKind(coinKinds[i])).getCoins();
+
 		}
-		
-		
-		//gives change
-		for(int coin : coinKinds) {
-			CoinRackListening rack = cRacks.get(machine.getCoinRackForCoinKind(coin));
-			//keeps emptying coins from the rack until either the rack is empty 
-			//or the value of the coin that this rack holds is greater than the amount of change that is still to be given 
-			while(rack.hasCoins()) { 
-				if(change < coin) {
-					break;
-				}
-				
-				try {
-					machine.getCoinRackForCoinKind(coin).releaseCoin();
-					change -= coin;
-				} catch (CapacityExceededException e) {
-					e.printStackTrace();
-				} catch (EmptyException e) {
-					System.out.println("This shouldn't have happened.");
-					e.printStackTrace();
-				} catch (DisabledException e) {//do not dispense coins
-					break;
-				}
-			}
-		}
-		
-		return change;
-		
-		
-	}
-	
-	
-	//internal function for giveChange
-	//only public for testing purposes, will become private later
-	public HashMap<Integer, Integer> makeChange(int[] coinsIn, int[] coinKinds, int change){
-		int[][] bestChange = new int[change+1][coinKinds.length];
-		
-		for(int i = 1; i <= change; i++) {
+		int change = coinKinds[coinKinds.length - 1];
+		int[][] bestChange = new int[change + 1][coinKinds.length];
+
+		for (int i = 1; i <= change; i++) {
 			int[] best = new int[coinKinds.length];
-			int bestLength = change+1;
-			for(int j = 0; j < coinKinds.length; j++) {
-				if(coinKinds[j] > i) { //coin denomination is more than change that we have to make
+			int bestLength = change + 1;
+			for (int j = 0; j < coinKinds.length; j++) {
+				if (coinKinds[j] > i) { // coin denomination is more than change than we have to make
 					continue;
 				}
-				if(coinsIn[j] == 0) { //there are no coins of this type
+				if (coinsIn[j] == 0) { // there are no coins of this type
 					continue;
 				}
-				
-				int changeLeft = i-coinKinds[j];
-				System.out.println(i + " | " + coinKinds[j] + " | " + changeLeft);//------------------------------------------
+
+				int changeLeft = i - coinKinds[j];
 				int[] changePossible = new int[best.length];
-				
-				for(int k=0; k<best.length; k++) { //
+
+				for (int k = 0; k < best.length; k++) { //
 					changePossible[k] = bestChange[changeLeft][k];
 				}
-				
-				if(changeLeft == 0) { //returning only this coin will give the amount of change necessary
+
+				if (changeLeft == 0) { // returning only this coin will give the amount of change necessary
+					best = new int[best.length];
 					best[j] = 1;
 					bestLength = 1;
 					break;
 				}
-				if(bestChange[changeLeft][j] == coinsIn[j]) { //we've already used up every type of this coin
+				if (bestChange[changeLeft][j] == coinsIn[j]) { // we've already used up every type of this coin
+					continue;
+				}
+				if (sumArray(bestChange[changeLeft]) == 0) { // change could not be made for this particular
+																// denomination
 					continue;
 				}
 				changePossible[j] += 1;
-				
-				if(sumArray(changePossible) <= bestLength) {
-					for(int k=0; k<changePossible.length; k++) {
+
+				if (sumArray(changePossible) <= bestLength) {
+					for (int k = 0; k < changePossible.length; k++) {
 						best[k] = changePossible[k];
 					}
 					bestLength = sumArray(changePossible);
 				}
-				
+
 			}
-			
-			for(int k=0; k<best.length; k++) {
+
+			for (int k = 0; k < best.length; k++) {
+				if (sumArray(best) == 0) { // if we can't make change for some denomination up to and including the
+											// greatest coin value, we can't guarantee change at all
+					return false;
+				}
 				bestChange[i][k] = best[k];
 			}
 		}
-		
-		for(int k=0; k<change+1; k++) {
-			System.out.println(Arrays.toString(bestChange[k]) + " " + k);
+		return true;
+	}
+
+	/**
+	 * Removes a specified amount of money from the coin racks and delivers them to
+	 * the coin racks' sink This method is intended for giving change. This method
+	 * does not guarantee that exact change will be given, instead, as close to
+	 * exact change as possible will be given
+	 * 
+	 * the correctness of this method for change (assuming the user pays with coins)
+	 * is based on the assumption that all coins from the receptacle were added to
+	 * the coin racks before change was given.
+	 * 
+	 * @param change
+	 *            The amount of change that needs to be given
+	 * @return the amount of change that was not given (returned 0 means all change
+	 *         was given)
+	 */
+	public int giveChange(int change) {
+		if (change == 0) {
+			return 0;
 		}
-		
-		HashMap<Integer, Integer> map = new HashMap<Integer,Integer>();
-		map.put(0, 0);
-		
-		for(int i=change-1; i>=0; i--) {
-			if(sumArray(bestChange[i]) > 0) {
-				for(int j = 0; j<coinKinds.length; j++) {
+		// System.out.println(machine.getNumberOfCoinRacks());
+		int[] coinKinds = new int[machine.getNumberOfCoinRacks()]; // get the coin kinds used in the machine
+		for (int i = 0; i < machine.getNumberOfCoinRacks(); i++) {
+			coinKinds[i] = machine.getCoinKindForCoinRack(i);
+		}
+
+		Arrays.sort(coinKinds); // sort in ascending order
+
+		int[] coinsIn = new int[machine.getNumberOfCoinRacks()];
+
+		for (int i = 0; i < machine.getNumberOfCoinRacks(); i++) {
+			coinsIn[i] = cRacks.get(machine.getCoinRackForCoinKind(coinKinds[i])).getCoins();
+		}
+
+
+		HashMap<Integer, Integer> cha = makeChange(coinsIn, coinKinds, change);
+
+		// gives change
+		for (int coin : coinKinds) {
+			try {
+				for (int i = cha.get(coin); i > 0; i--) {
+					machine.getCoinRackForCoinKind(coin).releaseCoin();
+					change -= coin;
+				}
+			} catch (CapacityExceededException e) {
+				e.printStackTrace();
+			} catch (EmptyException e) {
+				System.out.println("This shouldn't have happened.");
+				e.printStackTrace();
+			} catch (DisabledException e) {// do not dispense coins
+				break;
+			}
+		}
+		return change;
+
+	}
+
+	// internal function for giveChange
+	private HashMap<Integer, Integer> makeChange(int[] coinsIn, int[] coinKinds, int change) {
+		int[][] bestChange = new int[change + 1][coinKinds.length];
+
+		for (int i = 1; i <= change; i++) {
+			int[] best = new int[coinKinds.length];
+			int bestLength = change + 1;
+			for (int j = 0; j < coinKinds.length; j++) {
+				if (coinKinds[j] > i) { // coin denomination is more than change than we have to make
+					continue;
+				}
+				if (coinsIn[j] == 0) { // there are no coins of this type
+					continue;
+				}
+
+				int changeLeft = i - coinKinds[j];
+				int[] changePossible = new int[best.length];
+
+				for (int k = 0; k < best.length; k++) { //
+					changePossible[k] = bestChange[changeLeft][k];
+				}
+
+				if (changeLeft == 0) { // returning only this coin will give the amount of change necessary
+					best = new int[best.length];
+					best[j] = 1;
+					bestLength = 1;
+					break;
+				}
+				if (bestChange[changeLeft][j] == coinsIn[j]) { // we've already used up every type of this coin
+					continue;
+				}
+				if (sumArray(bestChange[changeLeft]) == 0) { // change could not be made for this particular
+																// denomination
+					continue;
+				}
+				changePossible[j] += 1;
+
+				if (sumArray(changePossible) <= bestLength) {
+					for (int k = 0; k < changePossible.length; k++) {
+						best[k] = changePossible[k];
+					}
+					bestLength = sumArray(changePossible);
+				}
+
+			}
+
+			for (int k = 0; k < best.length; k++) {
+				bestChange[i][k] = best[k];
+			}
+		}
+
+		HashMap<Integer, Integer> map = new HashMap<Integer, Integer>();
+		for (int i = 0; i < coinKinds.length; i++) {
+			map.put(coinKinds[i], 0);
+		}
+
+		for (int i = change; i >= 0; i--) {
+			if (sumArray(bestChange[i]) > 0) {
+				for (int j = 0; j < coinKinds.length; j++) {
 					map.put(coinKinds[j], bestChange[i][j]);
 				}
 				break;
@@ -183,13 +251,13 @@ public class VendCommunicator {
 		}
 		return map;
 	}
-	
+
 	private int sumArray(int[] a) {
 		int out = 0;
-		for(int i:a) {
+		for (int i : a) {
 			out += i;
 		}
 		return out;
 	}
-	
+
 }
