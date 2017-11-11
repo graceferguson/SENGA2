@@ -15,17 +15,21 @@ public class VendCommunicator {
 	private PopCanRackListening[] pRacks;
 	private VendingMachine machine;
 	private HashMap<CoinRack, CoinRackListening> cRacks;
+	private IndicatorLighListening changeLight;
+	private OutOfOrderLightListening outOfOrderLight;
 
 	public VendCommunicator() {
 	}
 
 	// Links the appropriate parts to their corresponding variables
-	public void linkVending(CoinReceptacleListening receptacle, PopCanRackListening[] pRacks, VendingMachine machine,
+	public void linkVending(CoinReceptacleListening receptacle,IndicatorLighListening indicator, OutOfOrderLightListening display, PopCanRackListening[] pRacks, VendingMachine machine,
 			HashMap<CoinRack, CoinRackListening> cRacks) {
 		this.receptacle = receptacle;
 		this.pRacks = pRacks;
 		this.machine = machine;
 		this.cRacks = cRacks;
+		this.changeLight = indicator;
+		this.outOfOrderLight = display;
 	}
 
 	/**
@@ -52,6 +56,15 @@ public class VendCommunicator {
 		} else {
 			System.out.println("Insufficient Funds");
 		}
+	}
+
+/**
+	* Function that is called when something needs to print to the display
+	*
+	* message - the message being outputted to the display
+	*/
+	public void displayMsg(String message) {
+		machine.getDisplay().display(message);
 	}
 
 	/**

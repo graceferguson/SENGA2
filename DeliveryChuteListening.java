@@ -5,7 +5,7 @@
 * A delivery chute listener class
 */
 
-package ca.ucalgary.seng300.a1;
+package ca.ucalgary.seng300.a2;
 
 import org.lsmr.vending.*;
 import org.lsmr.vending.hardware.*;
@@ -13,7 +13,7 @@ import org.lsmr.vending.hardware.*;
 public class DeliveryChuteListening implements DeliveryChuteListener {
 
 	boolean active;
-	Deliverable[] itemsReturned;
+	PopCan[] itemsReturned; // now Popcan instead of Deliverable 
 
 	/**
 	 * method for enabling listener

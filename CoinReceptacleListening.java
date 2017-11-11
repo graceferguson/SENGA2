@@ -1,7 +1,7 @@
 //SENG300 Group Assignment 1
 //Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
 
-package ca.ucalgary.seng300.a1;
+package ca.ucalgary.seng300.a2;
 
 import org.lsmr.vending.*;
 import org.lsmr.vending.hardware.*;
@@ -10,6 +10,8 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	private boolean isOn;
 	private int value;
 	private int coinCount;
+	private String message;
+//	private Display display;
 
 	// not sure why this listening takes in a variable, don't see it being used
 	// anywhere - thomas
@@ -17,6 +19,8 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 		isOn = true;
 		value = 0;
 		coinCount = 0;
+		message = "";
+//		display = new Display();
 	}
 
 	/**
@@ -38,7 +42,10 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	 */
 	public void coinAdded(CoinReceptacle receptacle, Coin coin) {
 		coinCount++;
+		// interrupt emptyMsgLoop if value was 0
 		value += coin.getValue();
+		message = "Credit: "+ value;
+//		display.display(message);
 	}
 
 	/**
@@ -47,6 +54,7 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	public void coinsRemoved(CoinReceptacle receptacle) {
 		value = 0;
 		coinCount = 0;
+		// call emptyMsgLoop.reactivateMsg() to start up loop again
 	}
 
 	public void coinsFull(CoinReceptacle receptacle) {
