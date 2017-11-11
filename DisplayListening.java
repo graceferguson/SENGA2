@@ -39,7 +39,7 @@ public class DisplayListening implements DisplayListener {
 	/**
 	 * Returns current status of display
 	 * @return isOn
-	 */
+	 */ 
 	public boolean isOn() {
 		return isOn;
 		
