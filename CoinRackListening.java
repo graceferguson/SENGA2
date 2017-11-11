@@ -1,7 +1,6 @@
-//SENG300 Group Assignment 1
-//Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
+//SENG300 Group Assignment 2
 
-package ca.ucalgary.seng300.a1;
+package ca.ucalgary.seng300.a2;
 
 import org.lsmr.vending.*;
 import org.lsmr.vending.hardware.*;
@@ -56,7 +55,7 @@ public class CoinRackListening implements CoinRackListener {
 	 * method for removing all coins
 	 */
 	public void coinRemoved(CoinRack rack, Coin coin) {
-		coinCount = 0;
+		coinCount--;
 	}
 
 	/**
@@ -98,6 +97,14 @@ public class CoinRackListening implements CoinRackListener {
 	 */
 	public int getCoins() {
 		return coinCount;
+	}
+
+	/**
+	 * 
+	 * @return true if there are coins in the rack
+	 */
+	public boolean hasCoins() {
+		return coinCount > 0;
 	}
 
 }
