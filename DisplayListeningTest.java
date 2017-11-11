@@ -1,15 +1,21 @@
 package ca.ucalgary.seng300.a2;
 
+/**
+ * Unit test for DisplayListening class
+ * 
+ * Coverage: 95.6% 
+ */
+
 import static org.junit.Assert.*;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.lsmr.vending.hardware.*;
 
 public class DisplayListeningTest {
 	
 	private DisplayListening displayListeningTest;
 	private Display displayTest;
-	//private LogFile log;
 
 	@Before
 	public void setUp() throws Exception {
