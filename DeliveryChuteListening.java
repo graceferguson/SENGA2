@@ -13,7 +13,7 @@ import org.lsmr.vending.hardware.*;
 public class DeliveryChuteListening implements DeliveryChuteListener {
 
 	boolean active;
-	Deliverable[] itemsReturned;
+	PopCan[] itemsReturned; // now Popcan instead of Deliverable 
 
 	/**
 	 * method for enabling listener
