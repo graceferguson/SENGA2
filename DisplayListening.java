@@ -36,13 +36,17 @@ public class DisplayListening implements DisplayListener {
 		
 	}
 	
+	/**
+	 * Returns current status of display
+	 * @return isOn
+	 */
 	public boolean isOn() {
 		return isOn;
 		
 	}
 	
 	/**
-	 * 
+	 * For testing purposes
 	 * @return
 	 */
 	public String getPrevMessage() {
@@ -51,7 +55,7 @@ public class DisplayListening implements DisplayListener {
 	}
 	
 	/**
-	 * 
+	 * For testing purposes
 	 * @return
 	 */
 	public String getCurrMessage() {
