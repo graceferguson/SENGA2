@@ -63,7 +63,7 @@ public class LogFile {
 		// static DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 	    // static Date dateobj = new Date();
 		// import java.util.Date; 
-		fw.append(input+"\n");
+		pw.append(input+"\n");
 	}
 	
 	
