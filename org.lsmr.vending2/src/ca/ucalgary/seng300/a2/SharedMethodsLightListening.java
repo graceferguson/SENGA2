@@ -1,5 +1,6 @@
 package ca.ucalgary.seng300.a2;
 
+import java.io.IOException;
 import java.sql.Timestamp;
 import java.util.Date;
 
@@ -12,40 +13,42 @@ import org.lsmr.vending.hardware.IndicatorLightListener;
 public class SharedMethodsLightListening  implements IndicatorLightListener{
 	
 	
-	Boolean isActive; 
+	protected Boolean isActive; 
 	private String prevMessage = "";
 	private String currMessage = "";
 	
-	public Timestamp getCurrentTime() {	
-			
-			Date date= new Date();
-		   	long time = date.getTime();
-			Timestamp ts = new Timestamp(time);
-			return ts;
-		
-		}
+
 	
 	public void messageChange(String oldMessage, String newMessage) {
 		// call event log here 
-		Timestamp currentTime = getCurrentTime();
+		
+		String currentTime = LogFile.df.format(LogFile.dateobj) ;
 		String classType  = this.getClass().getName();
-		newMessage = currentTime+ classType + "\t" + newMessage;
-//		try {
-//			LogFile.writeLog(newMessage);
-//		} catch (IOException e) {
-//			e.printStackTrace();
-//		} 
+		newMessage = classType + "\t" + newMessage;
+		try {
+			LogFile.writeLog( currentTime +"\t" + newMessage);
+		} catch (IOException e) {
+			e.printStackTrace();
+		} 
 	}
 	
 	public Boolean getisActive() {
 			return isActive;
 	}
+	public String getPrevMessage() {
+		return prevMessage;
+}
+	public String getCurrMessage() {
+		return currMessage;
+}
+	
+	 
 	
 	private void setMessage (IndicatorLight light) {
-		prevMessage  = "Light isActive value was" + isActive;
+		prevMessage  = "Light isActive value was " + isActive;
 		isActive = light.isActive();
 		currMessage = "Light isActive value is now " + isActive; 
-		messageChange(currMessage, prevMessage);
+		messageChange(prevMessage,currMessage);
 		
 	}
 	

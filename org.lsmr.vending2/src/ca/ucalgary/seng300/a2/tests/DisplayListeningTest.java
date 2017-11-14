@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.a2;
+package ca.ucalgary.seng300.a2.tests;
 
 /**
  * Unit test for DisplayListening class
@@ -11,6 +11,9 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.lsmr.vending.hardware.*;
+
+import ca.ucalgary.seng300.a2.DisplayListening;
+import ca.ucalgary.seng300.a2.LogFile;
 
 public class DisplayListeningTest {
 	

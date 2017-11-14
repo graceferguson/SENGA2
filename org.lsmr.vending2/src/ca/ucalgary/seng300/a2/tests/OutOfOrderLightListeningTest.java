@@ -1,7 +1,8 @@
-package ca.ucalgary.seng300.a2;
+package ca.ucalgary.seng300.a2.tests;
 
 import static org.junit.Assert.*;
 
+import java.io.IOException;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -10,16 +11,20 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.lsmr.vending.hardware.IndicatorLight;
 
+import ca.ucalgary.seng300.a2.LogFile;
+import ca.ucalgary.seng300.a2.OutOfOrderLightListening;
+
 public class OutOfOrderLightListeningTest {
 
 	
-	OutOfOrderLightListening ofOrderLightListening = new OutOfOrderLightListening();
+	OutOfOrderLightListening outOfOrderLightListening = new OutOfOrderLightListening();
 //	String MessageTest = "test message";
 	IndicatorLight light = new IndicatorLight();
 
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+		LogFile.createLogFile();
 	}
 
 	@AfterClass
@@ -31,7 +36,8 @@ public class OutOfOrderLightListeningTest {
 		OutOfOrderLightListening ofOrderLightListening = new OutOfOrderLightListening();
 		IndicatorLight light = new IndicatorLight();
 		light.register(ofOrderLightListening);
-		LogFile.createLogFile();
+		
+		
 		
 	}
 
@@ -41,48 +47,37 @@ public class OutOfOrderLightListeningTest {
 
 	@Test
 	public void testWriteLog() throws Exception {
-//		Boolean  t = LogFile.createLogFile();
-//		System.out.println(t);
 		LogFile.createLogFile();
-		ofOrderLightListening.messageChange("old message", "newMessage");
-//		LogFile.closeLogFile();
-		
-	}
-	
-	@Test
-	public void testActivated() {
 		light.activate();
-		ofOrderLightListening.activated(light);
-		System.out.println(ofOrderLightListening.getisActive());
+		outOfOrderLightListening.activated(light);
+		assertTrue("Light isActive value is now true".equals(outOfOrderLightListening.getCurrMessage()));
+		light.deactivate();
+		outOfOrderLightListening.activated(light);
+		assertTrue("Light isActive value was true".equals(outOfOrderLightListening.getPrevMessage()));
+		
+	}
+	
+	@Test
+	public void testActivated() throws IOException {
+		light.activate();
+		outOfOrderLightListening.activated(light);
+		assertEquals(light.isActive(),outOfOrderLightListening.getisActive());
+		
 		
 		
 	}
 	
 	@Test
-	public void testDeactive() {
+	public void testDeactive() throws IOException {
 		light.deactivate();
-		ofOrderLightListening.deactivated(light);
-		System.out.println(ofOrderLightListening.getisActive());
+		outOfOrderLightListening.deactivated(light);
+		assertEquals(light.isActive(),outOfOrderLightListening.getisActive());
+		
 
 		
 	}
+
 	
-	@Test
-	public void testGet() {
-//		testDeactive();
-		Boolean current = ofOrderLightListening.getisActive();
-		assertEquals(false, current);
-		light.activate();
-		ofOrderLightListening.activated(light);
-		Boolean current1 = ofOrderLightListening.getisActive();
-		assertEquals(true, current1);
-		
-	}
-	
-	
-	
-	
-	
-	
+
 	
 }
