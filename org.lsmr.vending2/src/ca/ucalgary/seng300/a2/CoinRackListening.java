@@ -1,5 +1,9 @@
-//SENG300 Group Assignment 2
-
+/**
+ * Function for coin rack  listener
+ * Elodie Boudes 10171818, Grace Ferguson 30004869, 
+ * Tae Chyung 10139101, Karndeep Dhami 10031989, 
+ * Andrew Garcia-Corley 10015169 & Michael de Grood 10134884
+ */
 package ca.ucalgary.seng300.a2;
 
 import org.lsmr.vending.*;
@@ -38,9 +42,15 @@ public class CoinRackListening implements CoinRackListener {
 		isOn = false;
 	}
 
+	/**
+	 * method to determine is the coin rack is full 
+	 */
 	public void coinsFull(CoinRack rack) {
 	}
 
+	/**
+	 * method to determine is the coin rack is empty 
+	 */
 	public void coinsEmpty(CoinRack rack) {
 	}
 

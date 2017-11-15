@@ -1,5 +1,9 @@
-//SENG300 Group Assignment 1
-//Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
+/**
+ * Function for coin receptacle listener
+ * Elodie Boudes 10171818, Grace Ferguson 30004869, 
+ * Tae Chyung 10139101, Karndeep Dhami 10031989, 
+ * Andrew Garcia-Corley 10015169 & Michael de Grood 10134884
+ */
 
 package ca.ucalgary.seng300.a2;
 
@@ -11,16 +15,20 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	private int value;
 	private int coinCount;
 	private String message;
-//	private Display display;
+	private VendCommunicator communicator;
+	private emptyMsgLoop msgLoop;
 
-	// not sure why this listening takes in a variable, don't see it being used
-	// anywhere - thomas
-	public CoinReceptacleListening(int reCap) {
+	/**
+	 * 
+	 * @param reCap
+	 */
+	public CoinReceptacleListening(int reCap, VendCommunicator communicator, emptyMsgLoop msgLoop) {
 		isOn = true;
 		value = 0;
 		coinCount = 0;
 		message = "";
-//		display = new Display();
+		this.communicator = communicator;
+		this.msgLoop = msgLoop;
 	}
 
 	/**
@@ -42,10 +50,13 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	 */
 	public void coinAdded(CoinReceptacle receptacle, Coin coin) {
 		coinCount++;
-		// interrupt emptyMsgLoop if value was 0
+		if(value == 0)
+		{
+			msgLoop.interruptThread();
+		}
 		value += coin.getValue();
 		message = "Credit: "+ value;
-//		display.display(message);
+		communicator.displayMsg(message);
 	}
 
 	/**
@@ -54,9 +65,12 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	public void coinsRemoved(CoinReceptacle receptacle) {
 		value = 0;
 		coinCount = 0;
-		// call emptyMsgLoop.reactivateMsg() to start up loop again
+		msgLoop.reactivateMsg();
 	}
 
+	/**
+	 * method to determine if the coin receptacle is full 
+	 */
 	public void coinsFull(CoinReceptacle receptacle) {
 	}
 
@@ -81,13 +95,17 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	}
 
 	/**
-	 * subtracts amound spent when purchase is made
+	 * subtracts amount spent when purchase is made
 	 * 
 	 * @param amount
 	 *            amount of purchase
 	 */
 	public void Purchase(int amount) {
 		value -= amount;
+		if(value <= 0)
+		{
+			msgLoop.reactivateMsg();
+		}
 	}
 
 	/**
@@ -97,6 +115,14 @@ public class CoinReceptacleListening implements CoinReceptacleListener {
 	 */
 	public int getValue() {
 		return value;
+	}
+	
+	public void setValue(int value){
+		this.value = value;
+		if(value == 0 && msgLoop.reactivateCheck())
+		{
+			msgLoop.reactivateMsg();
+		}
 	}
 
 	/**

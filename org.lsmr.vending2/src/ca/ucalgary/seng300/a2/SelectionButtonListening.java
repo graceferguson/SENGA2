@@ -1,17 +1,24 @@
-//SENG300 Group Assignment 1
-//Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
+/**
+ * Function for selection button listener
+ * Elodie Boudes 10171818, Grace Ferguson 30004869, 
+ * Tae Chyung 10139101, Karndeep Dhami 10031989, 
+ * Andrew Garcia-Corley 10015169 & Michael de Grood 10134884
+ */
 
 package ca.ucalgary.seng300.a2;
 
+import java.io.IOException;
+import java.text.*;
+import java.util.Date; 
 import org.lsmr.vending.hardware.*;
 
-/**
- * Class for selection button listener
- */
 public class SelectionButtonListening implements PushButtonListener {
 	private boolean isOn;
 	private int index;
 	private VendCommunicator communicator;
+	
+	static DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+    static Date dateobj = new Date();
 
 	/**
 	 * listener object for selection button
@@ -43,6 +50,11 @@ public class SelectionButtonListening implements PushButtonListener {
 	 */
 	public void pressed(PushButton button) {
 		communicator.purchasePop(index);
+		try {
+			LogFile.writeLog("\n"+df.format(dateobj) + "\t" + getClass().getName() + "\t" + "button pressed");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

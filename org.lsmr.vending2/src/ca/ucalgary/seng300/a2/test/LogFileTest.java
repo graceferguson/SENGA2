@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.a2;
+package ca.ucalgary.seng300.a2.test;
 
 import static org.junit.Assert.assertEquals;
 
@@ -8,34 +8,29 @@ import org.junit.Test;
 
 import ca.ucalgary.seng300.a2.LogFile;
 
-class LogFileTest {
+public class LogFileTest {
 
 	
 	private LogFile logfile; 
 	private boolean filecreated; 
 	
 	@Test
-	void CreateFileTest() throws IOException {
-		filecreated = LogFile.createLogFile();
+	public void CreateFileTest() throws IOException {
+		filecreated = logfile.createLogFile();
 		assertEquals(true,filecreated); 
 		
 	}
-	
-	@Test 
-	void CreateFileTest2() throws IOException {
-		filecreated = LogFile.createLogFile();
-//	    assertTrue(.exists());
-	}
-	
+		
 	
 	@Test
-	void CloseFileTest() throws IOException {
+	public void CloseFileTest() throws IOException {
 		logfile.closeLogFile();
 	}
 	
 	@Test 
-	void WriteFileTest() throws IOException {
-		logfile.writeLog ("new line"); 
+	public void WriteFileTest() throws IOException {
+		filecreated = logfile.createLogFile();
+		LogFile.writeLog ("new line"); 
 		
 	}
 	

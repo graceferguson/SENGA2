@@ -1,3 +1,11 @@
+
+/**
+ * Function for delivery chute listener
+ * Elodie Boudes 10171818, Grace Ferguson 30004869, 
+ * Tae Chyung 10139101, Karndeep Dhami 10031989, 
+ * Andrew Garcia-Corley 10015169 & Michael de Grood 10134884
+ */
+
 package ca.ucalgary.seng300.a2;
 
 import java.io.File;
@@ -25,7 +33,13 @@ public class LogFile {
     static DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
     static Date dateobj = new Date();
     
- 
+// public static void main(String[] args) throws IOException
+// {
+//	 filecreated = createLogFile(); 
+//	writeLog("test"); 
+//	writeLog("test2");
+
+// }
 
     
     public static void closeLogFile () throws IOException {
@@ -35,11 +49,22 @@ public class LogFile {
     
 	public static boolean createLogFile () throws FileNotFoundException, UnsupportedEncodingException {
 		
+		String fileName = "LogEvent.txt";
+		String startingMessage = "Time of creation " + df.format(dateobj) + "\\n\\n";
+		File f = new File(fileName);
 		try
         {
-			fw = new FileWriter("LogEvent.txt"); // write in the package folder 
+			if(f.exists() ) {
+
+				fw = new FileWriter(fileName,true);
+				startingMessage = "\n--------------------This is the start of a new run for VM--------------------- " + startingMessage; 
+			}
+			else {
+				fw = new FileWriter(fileName); // write in the package folder 
+			
+        }
             pw = new PrintWriter(fw);
-            pw.println("Time of creation " +df.format(dateobj) + "\n\n" );
+            pw.println(startingMessage);
         }
         catch (IOException e)
         {
@@ -63,7 +88,8 @@ public class LogFile {
 		// static DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
 	    // static Date dateobj = new Date();
 		// import java.util.Date; 
-		fw.append(input+"\n");
+		pw.append("\n"+input);
+		pw.flush();
 	}
 	
 	

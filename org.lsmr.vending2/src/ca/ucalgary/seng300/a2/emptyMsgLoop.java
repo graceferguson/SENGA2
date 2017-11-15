@@ -1,5 +1,13 @@
-package ca.ucalgary.seng300.a2;
 
+/**
+ * Function for empty messsage loop
+ * Elodie Boudes 10171818, Grace Ferguson 30004869, 
+ * Tae Chyung 10139101, Karndeep Dhami 10031989, 
+ * Andrew Garcia-Corley 10015169 & Michael de Grood 10134884
+ */
+
+
+package ca.ucalgary.seng300.a2;
 import java.lang.InterruptedException;
 
 /**
@@ -9,20 +17,40 @@ import java.lang.InterruptedException;
 public class emptyMsgLoop implements Runnable
 {
 	private String message;
-	private Boolean reactivate;
+	volatile private Boolean reactivate;
 	private VendCommunicator communicator;
+	private Thread msgLoopThread;
+	private Boolean reactivateReady;
 	
 	public emptyMsgLoop(String message, VendCommunicator communicator)
 	{
 		this.message = message;
 		reactivate = false;
 		this.communicator = communicator;
+		msgLoopThread = new Thread(this);
+		reactivateReady = false;
+	}
+	
+	public Thread startThread()
+	{
+		msgLoopThread.start();
+		return msgLoopThread;
+	}
+	
+	public void interruptThread()
+	{
+		msgLoopThread.interrupt();
 	}
 	
 	// function that reactivates the looping message. Called by coinReceptacleListening when coin receptacle is empty.
 	public void reactivateMsg()
 	{
 		reactivate = true;
+	}
+	
+	public Boolean reactivateCheck()
+	{
+		return reactivateReady;
 	}
 	
 	public void run()
@@ -35,7 +63,16 @@ public class emptyMsgLoop implements Runnable
 			{
 				while(true)
 				{
-					communicator.displayMsg("Hi there!");
+					communicator.displayMsg(message);
+					if (!communicator.hasChange() && !communicator.getChangeLightFlag()){
+						communicator.setChangeLightFlag(true);
+						communicator.changeLight(true);
+					}
+					else {
+						communicator.setChangeLightFlag(false);
+						communicator.changeLight(false);	
+						
+					}
 					Thread.sleep(5000);
 					communicator.displayMsg("");
 					Thread.sleep(10000);
@@ -44,18 +81,10 @@ public class emptyMsgLoop implements Runnable
 			// when an interrupt is received 
 			catch(InterruptedException e)
 			{
-				// waits for the message to get reactivated
-				while(!reactivate)
-				{
-					try {
-						Thread.sleep(100);
-					} catch (InterruptedException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}
-				}
-				// sets reactive back to false and loops to the top
+				reactivateReady = true;
+				while(reactivate == false){}
 				reactivate = false;
+				reactivateReady = false;
 			}
 		}
 	}

@@ -5,10 +5,13 @@
  * A class that sets up and tests the vending machine
  */
 
-package ca.ucalgary.seng300.a2;
+package ca.ucalgary.seng300.a2.test;
 import static org.junit.Assert.*;
 
+import java.io.FileNotFoundException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -17,11 +20,16 @@ import org.lsmr.vending.hardware.*;
 
 import ca.ucalgary.seng300.a2.CoinRackListening;
 import ca.ucalgary.seng300.a2.CoinReceptacleListening;
+import ca.ucalgary.seng300.a2.CoinReturnListening;
 import ca.ucalgary.seng300.a2.CoinSlotListening;
 import ca.ucalgary.seng300.a2.DeliveryChuteListening;
+import ca.ucalgary.seng300.a2.IndicatorLighListening;
+import ca.ucalgary.seng300.a2.LogFile;
+import ca.ucalgary.seng300.a2.OutOfOrderLightListening;
 import ca.ucalgary.seng300.a2.PopCanRackListening;
 import ca.ucalgary.seng300.a2.SelectionButtonListening;
 import ca.ucalgary.seng300.a2.VendCommunicator;
+import ca.ucalgary.seng300.a2.emptyMsgLoop;
 
 public class VendingMachineTest {
 
@@ -30,13 +38,24 @@ public class VendingMachineTest {
 	private SelectionButtonListening[] buttons;
 	private CoinReceptacleListening receptacle;
 	private DeliveryChuteListening chute;
+	private emptyMsgLoop msgLoop;
+	private HashMap<CoinRack, CoinRackListening> rackMap;
+	private CoinReturnListening coinReturn;
+	private IndicatorLighListening changeLight = new IndicatorLighListening();
+	private OutOfOrderLightListening outOfOrderLight  = new OutOfOrderLightListening();
+	//private LogFile logfile; 
+	
 
 	/**
 	 * setup to initialize vending machine and accompanying listeners
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
 	 */
 	@Before
-	public void setup() {
-		int[] coinTypes = { 5, 10, 25, 100, 200 };
+	public void setup() throws FileNotFoundException, UnsupportedEncodingException {
+		//boolean createdfile; 
+		LogFile.createLogFile();
+		int[] coinTypes = {1, 5, 10, 25, 100, 200 };
 		int numButtons = 6;
 		int coinCap = 200;
 		int popCap = 10;
@@ -54,26 +73,48 @@ public class VendingMachineTest {
 			prices.add(cost);
 		}
 		
-		machine = new VendingMachine(new int[] {1,5,10,25,100,200}, 6, 200,10,200, 200, 200);
+		int[] coinKinds = new int[] {1,5,10,25,100,200};
+		
+		machine = new VendingMachine(coinKinds, 6, 200,10,200, 200, 200);
+		VendCommunicator communicator = new VendCommunicator();
+		msgLoop = new emptyMsgLoop("Hi there!", communicator);
 		
 
 		// communicator needs to be created before selection buttons, since
 		// selection button takes in a reference to the communicator
-		VendCommunicator communicator = new VendCommunicator();
+//		VendCommunicator communicator = new VendCommunicator();
 
 		buttons = new SelectionButtonListening[numButtons];
-		receptacle = new CoinReceptacleListening(reCap);
+		receptacle = new CoinReceptacleListening(reCap,communicator,msgLoop); //ESB 
 		canRacks = new PopCanRackListening[6];
-		//chute = new DeliveryChuteListening();
+		chute = new DeliveryChuteListening();
 
 		machine.configure(popNames, prices);
 		machine.disableSafety();
 		machine.getCoinSlot().register(slot);
+		
+		coinReturn = new CoinReturnListening();
+		machine.getCoinReturn().register(coinReturn);
+		
+		//CoinReturn cReturn = new CoinReturn(200);
+		//HashMap<Integer, CoinChannel> coinRackChannels = new HashMap<Integer, CoinChannel>();
+		
+		//for(int i=0; i<coinKinds.length; i++) {
+		//	machine.getCoinRackForCoinKind(coinKinds[i]).connect(new CoinChannel(cReturn));
+		//	coinRackChannels.put(new Integer(coinKinds[i]), new CoinChannel(machine.getCoinRackForCoinKind(coinKinds[i])));
+		//}
+		rackMap = new HashMap<CoinRack, CoinRackListening>();
+		//machine.getCoinSlot().connect(new CoinChannel(machine.getCoinReceptacle()), new CoinChannel(new CoinReturn(200)));
+		//machine.getCoinReceptacle().connect(coinRackChannels, new CoinChannel(cReturn), new CoinChannel(null));
 		machine.getCoinReceptacle().register(receptacle);
 		machine.getDeliveryChute().register(chute);
+		machine.getExactChangeLight().register(changeLight);
+		machine.getOutOfOrderLight().register(outOfOrderLight);
 		for (int i = 0; i < coinTypes.length; i++) {
 			racks[i] = new CoinRackListening(coinTypes[i]);
 			machine.getCoinRack(i).register(racks[i]);
+			//machine.getCoinRack(i).connect(new CoinChannel(new CoinReturn(200)));
+			rackMap.put(machine.getCoinRack(i), racks[i]);
 		}
 		for (int i = 0; i < numButtons; i++) {
 			buttons[i] = new SelectionButtonListening(i, communicator);
@@ -85,8 +126,8 @@ public class VendingMachineTest {
 			machine.getPopCanRack(i).load(new PopCan(machine.getPopKindName(i)));
 		}
 
-		communicator.linkVending(receptacle, null, null, canRacks, machine, null);
-
+		communicator.linkVending(receptacle, changeLight, outOfOrderLight, canRacks, machine, rackMap);
+		msgLoop.startThread();
 	}
 
 	/**
@@ -105,6 +146,7 @@ public class VendingMachineTest {
 			machine.getSelectionButton(i).press();
 			assertTrue(canRacks[i].isEmpty());
 		}
+	
 	}
 
 	/**
@@ -218,5 +260,25 @@ public class VendingMachineTest {
 		machine.getSelectionButton(4).press();
 		assertFalse(canRacks[4].isEmpty());
 	}
-
+	
+	
+	/** 
+	 * Dispense change
+	 * @throws DisabledException 
+	 * @throws CapacityExceededException 
+	 * 
+	 */
+	@Test 
+	public void giveChangeTest() throws DisabledException, CapacityExceededException {
+		machine.getCoinSlot().addCoin(new Coin(200));
+		machine.getCoinSlot().addCoin(new Coin(200));
+		machine.loadCoins(100,100,100,100,100,100);
+		machine.getSelectionButton(1).press();
+		int a = receptacle.getValue();
+		// canRacks[1].isEmpty() = True 
+		assertEquals(0, receptacle.getValue() )  ;
+		assertEquals(150, coinReturn.getValue());
+		//receptacle.setValue(remainder);
+	}
+	
 }

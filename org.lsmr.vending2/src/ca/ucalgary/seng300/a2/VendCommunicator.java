@@ -17,9 +17,11 @@ public class VendCommunicator {
 	private HashMap<CoinRack, CoinRackListening> cRacks;
 	private IndicatorLighListening changeLight;
 	private OutOfOrderLightListening outOfOrderLight;
+	private Boolean changeLightFlag = false;
 
 	public VendCommunicator() {
 	}
+	
 
 	// Links the appropriate parts to their corresponding variables
 	public void linkVending(CoinReceptacleListening receptacle,IndicatorLighListening indicator, OutOfOrderLightListening display, PopCanRackListening[] pRacks, VendingMachine machine,
@@ -47,14 +49,41 @@ public class VendCommunicator {
 			System.out.println("Out of " + machine.getPopKindName(index));
 		} else if (receptacle.getValue() >= machine.getPopKindCost(index)) {
 			try {
-				receptacle.Purchase(machine.getPopKindCost(index));
+				int change = receptacle.getValue() - machine.getPopKindCost(index);
+				machine.getCoinReceptacle().unload();
+				//receptacle.Purchase(machine.getPopKindCost(index));
 				machine.getPopCanRack(index).dispensePopCan();
+				int remainder = giveChange(change);
+				receptacle.setValue(remainder);
+				if (!hasChange() && !changeLightFlag) {
+					machine.getExactChangeLight().activate();
+					changeLightFlag = true;
+				}
+				else if (hasChange() && changeLightFlag) {
+					machine.getExactChangeLight().deactivate();
+					changeLightFlag = false;
+				}
 			} catch (DisabledException e) {
 			} catch (EmptyException e) {
 			} catch (CapacityExceededException e) {
 			}
 		} else {
 			System.out.println("Insufficient Funds");
+		}
+	}
+	
+	public boolean getChangeLightFlag() {
+		return changeLightFlag;
+	}
+	public void setChangeLightFlag(boolean flag) {
+		changeLightFlag = flag;
+	}
+	public void changeLight(boolean flag2) {
+		if (flag2) {
+			machine.getExactChangeLight().activate();
+		}
+		else {
+			machine.getExactChangeLight().deactivate();
 		}
 	}
 

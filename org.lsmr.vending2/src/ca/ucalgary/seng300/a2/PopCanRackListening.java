@@ -1,5 +1,9 @@
-//SENG300 Group Assignment 1
-//Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
+/**
+ * Function for log file 
+ * Elodie Boudes 10171818, Grace Ferguson 30004869, 
+ * Tae Chyung 10139101, Karndeep Dhami 10031989, 
+ * Andrew Garcia-Corley 10015169 & Michael de Grood 10134884
+ */
 
 package ca.ucalgary.seng300.a2;
 

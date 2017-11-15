@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.a2;
+package ca.ucalgary.seng300.a2.test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -15,10 +15,12 @@ import org.lsmr.vending.hardware.VendingMachine;
 
 import ca.ucalgary.seng300.a2.CoinRackListening;
 import ca.ucalgary.seng300.a2.CoinReceptacleListening;
+import ca.ucalgary.seng300.a2.IndicatorLighListening;
+import ca.ucalgary.seng300.a2.OutOfOrderLightListening;
 import ca.ucalgary.seng300.a2.PopCanRackListening;
 import ca.ucalgary.seng300.a2.VendCommunicator;
 
-public class testChange {
+public class ChangeTest {
 		//Simple test wherein one specific coin is meant to be given as change
 		@Test
 		public void testSimple() {
@@ -35,7 +37,7 @@ public class testChange {
 			vm.loadCoins(100,100,100,100,100,100);
 			
 			VendCommunicator vc = new VendCommunicator();
-			vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+			vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 			int a = vc.giveChange(1);
 			assertEquals(a, 0);
 			assertEquals(crl[0].getCoins(), 99);
@@ -63,7 +65,7 @@ public class testChange {
 			vm.loadCoins(100,100,100,100,100,100);
 			
 			VendCommunicator vc = new VendCommunicator();
-			vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+			vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 			int a = vc.giveChange(30);
 			assertEquals(a, 0);
 			assertEquals(crl[2].getCoins(), 100);
@@ -89,7 +91,7 @@ public class testChange {
 					vm.loadCoins(4,0,1,1,100,100);
 					
 					VendCommunicator vc = new VendCommunicator();
-					vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+					vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 					int a = vc.giveChange(30);
 					assertEquals(a, 1);
 					assertEquals(crl[0].getCoins(), 0);
@@ -117,7 +119,7 @@ public class testChange {
 					vm.loadCoins(0,0,0,0,0,0);
 					
 					VendCommunicator vc = new VendCommunicator();
-					vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+					vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 					int a = vc.giveChange(400);
 					assertEquals(a, 400);
 					assertEquals(crl[0].getCoins(), 0);
@@ -145,7 +147,7 @@ public class testChange {
 					vm.loadCoins(100,100,100,100,100,100);
 					
 					VendCommunicator vc = new VendCommunicator();
-					vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+					vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 					int a = vc.giveChange(0);
 					assertEquals(a, 0);
 					assertEquals(crl[0].getCoins(), 100);
@@ -173,7 +175,7 @@ public class testChange {
 					vm.loadCoins(100,100,100,100,100,100);
 					
 					VendCommunicator vc = new VendCommunicator();
-					vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+					vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 					assertTrue(vc.hasChange());
 					
 				}
@@ -194,7 +196,7 @@ public class testChange {
 					vm.loadCoins(1,1,1,1,1,1);
 					
 					VendCommunicator vc = new VendCommunicator();
-					vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+					vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 					assertFalse(vc.hasChange());
 					
 				}
@@ -215,7 +217,7 @@ public class testChange {
 					vm.loadCoins(0,0,0,0,0,0);
 					
 					VendCommunicator vc = new VendCommunicator();
-					vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+					vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 					assertFalse(vc.hasChange());
 					
 				}
@@ -236,7 +238,7 @@ public class testChange {
 					vm.loadCoins(4,1,2,3,1,0);
 					
 					VendCommunicator vc = new VendCommunicator();
-					vc.linkVending(new CoinReceptacleListening(100),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
+					vc.linkVending(new CoinReceptacleListening(100,null,null),new IndicatorLighListening(), new OutOfOrderLightListening(), new PopCanRackListening[] {new PopCanRackListening()}, vm, hm);
 					assertTrue(vc.hasChange());
 					
 				}
