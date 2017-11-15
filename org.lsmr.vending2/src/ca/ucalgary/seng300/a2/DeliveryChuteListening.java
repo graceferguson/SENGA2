@@ -1,4 +1,9 @@
-//SENG300 Group Assignment 2
+/**
+ * Function for delivery chute listener
+ * Elodie Boudes 10171818, Grace Ferguson 30004869, 
+ * Tae Chyung 10139101, Karndeep Dhami 10031989, 
+ * Andrew Garcia-Corley 10015169 & Michael de Grood 10134884
+ */
 
 package ca.ucalgary.seng300.a2;
 
@@ -13,11 +18,12 @@ import org.lsmr.vending.hardware.*;
 public class DeliveryChuteListening implements DeliveryChuteListener {
 
 	boolean active;
-	PopCan[] itemsReturned; // now Popcan instead of Deliverable since changes hardware by client
+	PopCan[] itemsReturned; // now Popcan instead of Deliverable since changes
+							// hardware by client
 
 	static DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-    static Date dateobj = new Date();
-	
+	static Date dateobj = new Date();
+
 	/**
 	 * method for enabling listener
 	 */
@@ -41,7 +47,7 @@ public class DeliveryChuteListening implements DeliveryChuteListener {
 		for (int i = 0; i < itemsReturned.length; i++) {
 			if (itemsReturned[i] instanceof PopCan) {
 				try {
-					LogFile.writeLog("\n"+df.format(dateobj) + "\t" + getClass().getName() + "\t" + "pop dispensed");
+					LogFile.writeLog("\n" + df.format(dateobj) + "\t" + getClass().getName() + "\t" + "pop dispensed");
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -50,20 +56,22 @@ public class DeliveryChuteListening implements DeliveryChuteListener {
 	}
 
 	/**
-	 * method for determining if the door is open 
+	 * method for determining if the door is open
 	 */
 	public void doorOpened(DeliveryChute chute) {
 
 	}
 
-	/** method for determining if the door is closed
+	/**
+	 * method for determining if the door is closed
 	 * 
 	 */
 	public void doorClosed(DeliveryChute chute) {
 
 	}
 
-	/** method for determining if the chute is full 
+	/**
+	 * method for determining if the chute is full
 	 * 
 	 */
 	public void chuteFull(DeliveryChute chute) {
