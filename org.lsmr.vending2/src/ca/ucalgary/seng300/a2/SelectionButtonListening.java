@@ -3,6 +3,9 @@
 
 package ca.ucalgary.seng300.a2;
 
+import java.io.IOException;
+import java.text.*;
+import java.util.Date; 
 import org.lsmr.vending.hardware.*;
 
 /**
@@ -12,6 +15,9 @@ public class SelectionButtonListening implements PushButtonListener {
 	private boolean isOn;
 	private int index;
 	private VendCommunicator communicator;
+	
+	static DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+    static Date dateobj = new Date();
 
 	/**
 	 * listener object for selection button
@@ -43,6 +49,11 @@ public class SelectionButtonListening implements PushButtonListener {
 	 */
 	public void pressed(PushButton button) {
 		communicator.purchasePop(index);
+		try {
+			LogFile.writeLog("\n"+df.format(dateobj) + "\t" + getClass().getName() + "\t" + "button pressed");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	/**

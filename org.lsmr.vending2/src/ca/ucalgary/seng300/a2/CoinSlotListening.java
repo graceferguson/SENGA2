@@ -1,7 +1,11 @@
-//SENG300 Group Assignment 1
-//Tae Chyung (10139101), Cameron Davies (30003456) & Grace Ferguson (30004869)
+//SENG300 Group Assignment 2
 
 package ca.ucalgary.seng300.a2;
+
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.lsmr.vending.*;
 import org.lsmr.vending.hardware.*;
@@ -11,6 +15,9 @@ import org.lsmr.vending.hardware.*;
  */
 public class CoinSlotListening implements CoinSlotListener {
 	private boolean isOn;
+	
+	static DateFormat df = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
+    static Date dateobj = new Date();
 
 	public CoinSlotListening() {
 		isOn = true;
@@ -30,9 +37,20 @@ public class CoinSlotListening implements CoinSlotListener {
 		isOn = false;
 	}
 
+	/**
+	 * method for determining if the coin inserted is valid 
+	 */
 	public void validCoinInserted(CoinSlot slot, Coin coin) {
+		try {
+			LogFile.writeLog("\n"+df.format(dateobj) + "\t" + getClass().getName() + "\t" + "coin inserted");
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
+	/**
+	 * method for determining if the coin inserted is invalid 
+	 */
 	public void coinRejected(CoinSlot slot, Coin coin) {
 	}
 
